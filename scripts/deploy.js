@@ -44,6 +44,30 @@ const publishTo = (url) => {
     });
 };
 
+const cb = function (err) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(
+        chalk.green(`
+            \n
+            Publish is success! \n
+        `)
+    );
+};
+
+const publishToPages = function (url) {
+    ghpages.publish(
+        'dist',
+        {
+            branch,
+            repo: url,
+        },
+        cb
+    );
+};
+
 (async () => {
     if (!['beta', 'master', 'gh-pages'].includes(branch)) {
         console.log(`\n 分支名 ${branch} 不正确，应为 beta 或 master 或 gh-pages \n`);
@@ -61,7 +85,7 @@ const publishTo = (url) => {
     //     ]);
     //     message = prompt.ans;
     // }
-    ghpages.clean();
+    // ghpages.clean();
     // const repos = Object.keys(repoObj)
     //     .map((k) => {
     //         if (k.startsWith('url')) return repoObj[k];
@@ -75,11 +99,12 @@ const publishTo = (url) => {
     // }
     const urlStrArr = repoObj.url.split('//');
     const sshUrl = 'ssh://git@' + urlStrArr[1];
-    const resArr = [await publishTo(sshUrl)];
+    // const resArr = [await publishTo(sshUrl)];
+    publishToPages(sshUrl);
 
-    if (resArr.every(Boolean)) {
-        // const giteeUrl = 'https://gitee.com/barneyZhao/typing-cn/pages';
-        // console.log(` Auto open browser to ${chalk.yellow(giteeUrl)} \n`);
-        // openBrowser(giteeUrl);
-    }
+    // if (resArr.every(Boolean)) {
+    // const giteeUrl = 'https://gitee.com/barneyZhao/typing-cn/pages';
+    // console.log(` Auto open browser to ${chalk.yellow(giteeUrl)} \n`);
+    // openBrowser(giteeUrl);
+    // }
 })();
