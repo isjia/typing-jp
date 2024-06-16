@@ -45,8 +45,8 @@ const publishTo = (url) => {
 };
 
 (async () => {
-    if (!['beta', 'master'].includes(branch)) {
-        console.log(`\n 分支名 ${branch} 不正确，应为 beta 或 master \n`);
+    if (!['beta', 'master', 'gh-pages'].includes(branch)) {
+        console.log(`\n 分支名 ${branch} 不正确，应为 beta 或 master 或 gh-pages \n`);
         return;
     }
     // let prompt = null;
@@ -73,7 +73,9 @@ const publishTo = (url) => {
     // for (const repoUrl of repos) {
     //     resArr.push(await publishTo(repoUrl));
     // }
-    const resArr = [await publishTo(repoObj.url)];
+    const urlStrArr = repoObj.url.split('//');
+    const sshUrl = 'ssh://' + urlStrArr[1];
+    const resArr = [await publishTo(sshUrl)];
 
     if (resArr.every(Boolean)) {
         // const giteeUrl = 'https://gitee.com/barneyZhao/typing-cn/pages';

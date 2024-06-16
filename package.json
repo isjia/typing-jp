@@ -1,11 +1,10 @@
 {
-    "name": "typing-cn",
-    "description": "Chinese type test with PinYin.",
-    "version": "20231127a",
+    "name": "typing-jp",
+    "description": "かな入力練習ツール",
+    "version": "20240617a",
     "packageManager": "pnpm@6.27.1",
     "repository": {
-        "url": "https://gitee.com/barneyZhao/typing-cn.git",
-        "url-github": "https://github.com/BarneyZhao/typing-cn.git"
+        "url": "https://github.com/isjia/typing-jp.git"
     },
     "scripts": {
         "dev": "vite",
@@ -15,6 +14,7 @@
         "update-version": "node scripts/updateVersion.js",
         "online": "npm run build && node scripts/deploy.js master docs/",
         "online2": "npm run build-nobase && node scripts/deploy.js master docs-nobase/",
+        "online-gh-pages": "npm run build && node scripts/deploy.js gh-pages docs/",
         "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
         "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,scss}'",
         "word": "node scripts/generateWords.js"
@@ -23,7 +23,7 @@
         "@ant-design/icons": "^4.7.0",
         "antd": "^4.19.1",
         "dayjs": "^1.10.8",
-        "pinyin-pro": "^3.15.2",
+        "pinyin-pro": "^3.15.4",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-redux": "^7.2.6",
