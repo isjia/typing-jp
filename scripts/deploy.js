@@ -74,7 +74,7 @@ const publishTo = (url) => {
     //     resArr.push(await publishTo(repoUrl));
     // }
     const urlStrArr = repoObj.url.split('//');
-    const sshUrl = 'ssh://' + urlStrArr[1];
+    const sshUrl = 'ssh://git@' + urlStrArr[1];
     const resArr = [await publishTo(sshUrl)];
 
     if (resArr.every(Boolean)) {
