@@ -1,9 +1,8 @@
-# typing-cn
+# typing-jp
 
 #### 介绍
 
-拼音打字玩具。
-Chinese type test with PinYin.
+假名输入法练习工具。
 
 #### 软件架构
 

@@ -1,9 +1,8 @@
-# typing-cn
+# typing-jp
 
 #### Description
 
-拼音打字玩具。
-Chinese type test with PinYin.
+かな入力練習ツール
 
 #### Software Architecture
 
