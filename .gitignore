@@ -23,3 +23,7 @@ report.html
 *.njsproj
 *.sln
 *.sw?
+
+
+# define node version, now using v16.20.1, run `nvm use` to switch node version
+.nvmrc
