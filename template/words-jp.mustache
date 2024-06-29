@@ -1,0 +1,17 @@
+// auto generate jp words
+export interface Word {
+    label: string;
+    text: string;
+    trans: string;
+}
+const defaultWords: Word[] = [
+    {{#convertedWords}}
+    {
+        label: '{{label}}',
+        text: '{{text}}',
+        trans: '{{{trans}}}',
+    },
+    {{/convertedWords}}
+];
+
+export default defaultWords;

@@ -98,7 +98,7 @@ const Monkey: React.FC<MapState & MapDispatch> = (props) => {
             setWordArr((_wordArr) => {
                 const letterObj = _wordArr[coordinate[0]].letterArr[coordinate[1]];
                 if (letterObj && keyCode !== SPACE_CODE) {
-                    // console.log(inputVal === letterObj.letter, letterObj);
+                    console.log(inputVal === letterObj.letter, letterObj);
                     letterObj.isCorrect = inputVal === letterObj.letter;
                     _wordArr[coordinate[0]].letterArr[coordinate[1]] = letterObj;
                 }

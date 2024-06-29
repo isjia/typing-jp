@@ -16,6 +16,7 @@ import { ReloadOutlined } from '@ant-design/icons';
 import './Fingers.less';
 import { storeConnect, MapState, MapDispatch } from '@/store/index';
 import wordTool, { WordType } from '@/utils/wordTool';
+import { Word } from '@/words';
 
 const { Countdown } = Statistic;
 const { Panel } = Collapse;
@@ -47,7 +48,9 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
     const keystrokeCountRef = useRef(0);
     const countdownTimeRef = useRef(parseInt(props.$state.root.countdownTime, 10));
     const [deadlineText, setDeadlineText] = useState(getCountdownStr(countdownTimeRef.current));
-    const [isHideCharacter, setIsHideCharacter] = useState(false);
+    const [isHideCharacter, setIsHideCharacter] = useState(true);
+    // isjia add: show acting word text
+    const [showActingWordText, setShowActingWordText] = useState(false);
     const typingResultRef = useRef({
         wpm: 0,
         correct: 0,
@@ -72,14 +75,29 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
             }
         });
     };
-    const checkInputVal = (inputArr: string[], target: string) => {
-        let isCorrect = true;
-        inputArr.forEach((char, index) => {
-            if (target.charAt(index) !== char) {
-                isCorrect = false;
-            }
-        });
-        return isCorrect;
+    // rmv: 重写了，对比 text 或者 label 任意一个正确都可以
+    // const checkInputVal = (inputArr: string[], target: string) => {
+    //     let isCorrect = true;
+    //     inputArr.forEach((char, index) => {
+    //         if (target.charAt(index) !== char) {
+    //             isCorrect = false;
+    //         }
+    //     });
+    //     return isCorrect;
+    // };
+
+    //isjia: 重写，对比 text 或者 label 任意一个正确都可以
+    const checkInputVal = (inputArr: string[], target: Word) => {
+        const inputText = inputArr.join('');
+        if (inputText === target.text) {
+            console.log('correct text: ', inputText, ', ', target.text);
+            return true;
+        }
+        if (inputText === target.label) {
+            console.log('correct label: ', inputText, ', ', target.label);
+            return true;
+        }
+        return false;
     };
     const inputCountdownTime = (value?: number | string) => {
         if (value && /^\d+$/g.test(String(value))) {
@@ -121,10 +139,26 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
             };
         }, 10);
     }, []);
+
     const mainInputKeyUp = (evt: React.KeyboardEvent) => {
-        if (evt.keyCode === 13) reloadBtn();
+        //isjia: shift+space 展示或隐藏当前单词的假名
+        if (evt.shiftKey && evt.keyCode === 32) {
+            console.log('shift + space: ', evt.keyCode, showActingWordText);
+            const currentState = showActingWordText;
+            setShowActingWordText(!currentState);
+            // console.log(showActingWordText.current);
+        }
+
+        //isjia: shift+enter 弹窗提示单词翻译。
+        if (evt.shiftKey && evt.keyCode === 13) {
+            console.log('shift + enter: ', evt.keyCode);
+            alert(wordArr[actingWordIndex].trans);
+        }
+        // ctrl + enter reload 一组新的单词
+        if (evt.ctrlKey && evt.keyCode === 13) reloadBtn();
         if (typingEnd) return;
         keystrokeCountRef.current += 1;
+        console.log('keystrokeCountRef.current: ', keystrokeCountRef.current);
     };
 
     useEffect(() => {
@@ -166,18 +200,18 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
             });
             return;
         }
-        if (!timeStartRef.current) countDownStart();
+        //isay: commented if (!timeStartRef.current) countDownStart();
         timeStartRef.current = true;
         const inputArr = Array.from(wordInput.trim());
-        if (wordInput[wordInput.length - 1] === ' ') {
+        if (wordInput[wordInput.length - 1] === ' ' || wordInput[wordInput.length - 1] === '　') {
             setWordInput('');
             if (inputArr.length === 0) return;
             setWordArr((arr) => {
                 let tempArr = [...arr];
                 const targetWord = tempArr[actingWordIndex];
-                const isCorrect = checkInputVal(inputArr, targetWord.text);
-                tempArr[actingWordIndex].isCorrect =
-                    isCorrect && inputArr.length === targetWord.text.length;
+                const isCorrect = checkInputVal(inputArr, targetWord);
+                tempArr[actingWordIndex].isCorrect = isCorrect;
+                //isjia: 修改判定条件，省略长度判定 isCorrect && inputArr.length === targetWord.text.length;
 
                 typingResultRef.current.inputWordArr.push(
                     Object.assign({ input: inputArr.join('') }, tempArr[actingWordIndex])
@@ -196,7 +230,7 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
             setWordArr((arr) => {
                 const tempArr = [...arr];
                 const targetWord = tempArr[actingWordIndex];
-                const isCorrect = checkInputVal(inputArr, targetWord.text);
+                const isCorrect = checkInputVal(inputArr, targetWord);
                 tempArr[actingWordIndex].isCorrect = isCorrect === false ? false : null;
                 return tempArr;
             });
@@ -224,7 +258,7 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
                             type="link"
                             onClick={() => setIsHideCharacter((v) => !v)}
                         >
-                            {isHideCharacter ? '显示' : '隐藏'}拼音
+                            {isHideCharacter ? '显示' : '隐藏'}假名
                         </Button>
                     </div>
                     <div className="home-show-main">
@@ -249,7 +283,13 @@ const Fingers: React.FC<MapState & MapDispatch> = (props) => {
                                             <div
                                                 className={`home-show-main-window--text ${
                                                     isHideCharacter ? 'hide' : ''
-                                                }`}
+                                                }
+                                                ${
+                                                    actingWordIndex === index && showActingWordText
+                                                        ? 'show-text'
+                                                        : ''
+                                                }
+                                                `}
                                             >
                                                 {item.text}
                                             </div>

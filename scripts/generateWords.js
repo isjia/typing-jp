@@ -2,6 +2,7 @@ const FS = require('fs');
 const Mustache = require('mustache');
 const pinyin = require('chinese-to-pinyin');
 
+// 默认词库
 const wordsStr = require('../words.json').words;
 
 const wordsTemplate = `${__dirname}/../template/words.mustache`;
